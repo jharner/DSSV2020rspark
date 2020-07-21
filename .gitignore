@@ -2,5 +2,8 @@
 *.aux
 *.gz
 *.bbprojectd
+*.html
 *.pdf
 *.docx
+.Rproj.user
+*.Rproj

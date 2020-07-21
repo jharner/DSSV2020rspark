@@ -4,6 +4,8 @@ author: "Jim Harner, WVU; Chris Grant, Rc$^2$ai; Mark Lilback, Rc$^2$ai"
 date: "DSSV 2020"
 output:
   beamer_presentation: default
+  slidy_presentation: default
+  ioslides_presentation: default
 ---
 
 ```{r setup, include=FALSE}
@@ -12,9 +14,13 @@ knitr::opts_chunk$set(echo = FALSE)
 
 ## Important links
 
-DSSV 2019 Talk: [https://github.com/jharner/DSSV2019rc2](https://github.com/jharner/DSSV2019rc2)
+DSSV 2020 Talk: [https://github.com/jharner/DSSV2020rspark](https://github.com/jharner/DSSV2020rspark)
 
-RSpark: [https://github.com/jharner/rspark](https://github.com/jharner/rspark)
+RCompute: [https://github.com/jharner/rcompute](https://github.com/jharner/rcompute)
+
+RHadoop: [https://github.com/jharner/rhadoop](https://github.com/jharner/rhadoop)
+
+RSpark-cluster: [https://github.com/jharner/rspark-cluster](https://github.com/jharner/rspark-cluster)
 
 RSpark Tutorial: [https://github.com/jharner/rspark-tutorial](https://github.com/jharner/rspark-tutorial)
 
@@ -41,7 +47,17 @@ DevOps (development + operations) has been revolutionized by containers and meth
 * [Docker](https://www.docker.com): a technology for building, deploying, and running container images;  
 * [Kubernetes](https://kubernetes.io): a technology for deploying, scaling, and managing containerized applications. 
 
-Docker Swarm is not as scalable or feature complete as Kubernetes.
+## Reproducibility
+
+Reproducibility exists at many levels:  
+
+* Repeatable: same data, same code, same user 
+* Reproducible: same data, same code, different user 
+* Strong Reproducilbility: same data, different code, different user 
+* Replicable: different data, different code, different user 
+* Generalizable: different data, same code, same or different user 
+
+These definitions (except for the 3rd) are from NSF.
 
 ## Docker
 
