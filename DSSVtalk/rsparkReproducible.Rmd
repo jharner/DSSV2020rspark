@@ -39,7 +39,7 @@ Data Science Platforms are complex! How do we solve the data analysis issues of:
 * sharing, 
 * reliability  
 * scalability, and  
-* reproducibility?  
+* reproducibility.  
 
 DevOps (development + operations) has been revolutionized by containers and methods of orchestrating containers. Specifically, we will examine two technologies which are changing how complex software systems are built, deployed, and maintained. These are:  
 
@@ -50,13 +50,28 @@ DevOps (development + operations) has been revolutionized by containers and meth
 
 Reproducibility exists at many levels:  
 
-* Repeatable: same data, same code, same user $\leadsto$ same result
-* Reproducible: same data, same code, different user $\leadsto$ same result 
-* Strong Reproducilbility: same data, different code, different user $\leadsto$ comparable result
-* Replicable: different data, different code, different user $\leadsto$ comparable result
-* Generalizable: different data, same code, same or different user $\leadsto$ comparable result
+* Repeatable: same data, same code, same user $\leadsto$ same results 
+* Reproducible: same data, same code, different user $\leadsto$ same results  
+* Strong Reproducilbility: same data, different code, different user $\leadsto$ comparable results 
+* Replicable: different data, different code, different user $\leadsto$ comparable results 
+* Generalizable: different data, same code, same or different user $\leadsto$ comparable results 
 
 These definitions (except for the 3rd) are from NSF and assume the same underlying hypotheses.
+
+## Basic Tools
+
+Reproducible computing and reporting require knowledge of the following underlying skills:
+
+* the Linux CLI 
+* basic bash scripting 
+* Docker/ Docker Hub 
+* git/ GitHub 
+* R/ Python 
+
+The following skills are required for certain use cases: 
+
+* make 
+* ansible 
 
 ## Docker
 
@@ -89,7 +104,7 @@ Example: [JupyterHub](https://jupyterhub.readthedocs.io/en/stable/)
 
 JupyterHub allows instances of a single-user Jupyter notebook to be spawned and managed. Two distributions are available:
 
-* The [Littlest JupyterHub](http://tljh.jupyter.org/en/latest/) for 0--50 users on a single machine  
+* The [Littlest JupyterHub](http://tljh.jupyter.org/en/latest/) for 0--100 users on a single machine  
 * [Zero to JupyterHub on Kubernetes](http://z2jh.jupyter.org/en/latest/) for a large number of users and machines  
 
 Example: [RStudio Server Pro with Launcher and Kubernetes](https://support.rstudio.com/hc/en-us/articles/360021328733-FAQ-for-RStudio-Server-Pro-with-Launcher-and-Kubernetes)
