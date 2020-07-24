@@ -7,3 +7,5 @@
 *.docx
 .Rproj.user
 *.Rproj
+*.dat
+*.lck

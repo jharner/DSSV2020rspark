@@ -64,13 +64,13 @@ Reproducible computing and reporting require knowledge of the following underlyi
 
 * the Linux CLI 
 * basic bash scripting 
+* make 
 * Docker/ Docker Hub 
 * git/ GitHub 
 * R/ Python 
 
 The following skills are required for certain use cases: 
 
-* make 
 * ansible 
 
 ## Docker
