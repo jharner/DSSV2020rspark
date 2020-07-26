@@ -2,7 +2,7 @@
 
 all: spark-sql.html
 
-databases.html:
+spark-sql.html:
 	R -e "rmarkdown::render('spark-sql.Rmd')"
 	
 clean:
