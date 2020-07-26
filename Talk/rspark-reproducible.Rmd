@@ -48,7 +48,7 @@ DevOps (development + operations) has been revolutionized by containers and meth
 
 ## Reproducibility
 
-Reproducibility exists at many levels:  
+This presentation focuses on reproducibility which exists at many levels:  
 
 * Repeatable: same data, same code, same user $\leadsto$ same results 
 * Reproducible: same data, same code, different user $\leadsto$ same results  
@@ -58,7 +58,13 @@ Reproducibility exists at many levels:
 
 These definitions (except for the 3rd) are from NSF and assume the same underlying hypotheses.
 
-## Basic Tools
+At a minimum, a referee for a journal paper should be able to reproduce the author's work, i.e., same data, same code, but different user/machine.
+
+Replicability is used for competitions and for studies in which the same data, but nothing else, are given to multiple research teams.
+
+Generalizability is used, e.g., productizing machine learning algorithms, in which new data will be arriving.
+
+## Basic Tools for Reproducibility
 
 Reproducible computing and reporting require knowledge of the following underlying skills:
 
@@ -68,10 +74,49 @@ Reproducible computing and reporting require knowledge of the following underlyi
 * Docker/ Docker Hub 
 * git/ GitHub 
 * R/ Python 
+* Pandoc
 
 The following skills are required for certain use cases: 
 
 * ansible 
+
+## Required Environments for Reproducibility
+
+* computing infrastructure 
+  + Docker for creating images/ containers based on Linux 
+  + Docker Hub for storing/ deploying pre-built images 
+  + bash scripts for automating the docker build process 
+* coding/ reporting projects 
+  + git for version control, tracking changes, branching, etc. 
+  + GitHub for hosting software projects and for providing version control and collaboration features
+  + make for automating the code build process 
+
+## Steps for Creating a Reproducible Workflow
+
+* Build the computing environment first, at least approximately. 
+  + download a base image from Docker Hub---perhaps just a Linux image, a Rocker image, etc.
+  + write a Dockerfile extending the base image, e.g., R packages  
+  + add configuration files as needed 
+  + write shell scripts to automate building and running containers and pushing images to Docker Hub, etc.
+
+Your container (a running instance of an image) must have a development environment, e.g., RStudio, for running code using literate programming---R Markdown is the preferred framework. 
+
+* Build the coding environment. 
+  + start a project repository on GitHub, initially with a README file  
+  + clone the GitHub repo to the container runtime 
+  + use R Markdown for literate programming 
+  + use make to automate the project build process 
+  + stage, commit, and push to GitHub often 
+
+## Docker Applications
+
+Docker containers run a single service, although there are workarounds. What if you need multiple services, e.g., RStudio and PostgreSQL?
+
+Answer: build a Docker application with `docker-compose`, which builds the images and runs the containers.
+
+`rcompute` is Docker applications with two container: one called `rconnect` with an RStudio service the other called `rpsql` with a PostgreSQL service.
+
+See: [rcompute](https://github.com/jharner/rcompute)
 
 ## Docker
 

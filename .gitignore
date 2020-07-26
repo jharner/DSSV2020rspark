@@ -7,5 +7,6 @@
 *.docx
 .Rproj.user
 *.Rproj
+.Rhistory
 *.dat
 *.lck
