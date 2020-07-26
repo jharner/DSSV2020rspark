@@ -112,11 +112,31 @@ Your container (a running instance of an image) must have a development environm
 
 Docker containers run a single service, although there are workarounds. What if you need multiple services, e.g., RStudio and PostgreSQL?
 
-Answer: build a Docker application with `docker-compose`, which builds the images and runs the containers.
+Answer: build a Docker application with `docker-compose`, which builds the images and runs the containers. 
 
-`rcompute` is Docker applications with two container: one called `rconnect` with an RStudio service the other called `rpsql` with a PostgreSQL service.
+`rcompute` is Docker applications with two container: one called `rconnect` with an RStudio service the other called `rpsql` with a PostgreSQL service. 
 
 See: [rcompute](https://github.com/jharner/rcompute)
+
+By default, the containers within a Docker application are on the same network. Communication is done through defined ports. 
+
+What if we want additional services that you only want to run occasionally, e.g., Hadoop or Spark? Or, what if we want to run some services locally and some on a cloud platform?
+
+## Multiple Docker Applications in `rspark` 
+
+`rspark` historically has been a self-contained Docker application running RStudio, but it is now being broken into three applicatons: 
+
+* `rcompute` with containers `rconnect` and `rpsql` 
+* `rhadoop` with containers `rhive` and `rhadoop` 
+* `rspark-cluster` with conainers `master` and two workers 
+
+`rcompute` is an edge application and typically would be run on your laptop or on a server. This application will probably do for most of your development work, particularly since it can also run a single-node version of Spark for machine learning development.
+
+`rhadoop` and `rspark-cluster` will run more efficiently in the cloud, e.g., in AWS, Digital Ocean, etc., but they can be run locally or on a server (at least for development).
+
+## `rspark` Networking
+
+
 
 ## Docker
 
