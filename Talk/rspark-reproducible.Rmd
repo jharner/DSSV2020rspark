@@ -85,13 +85,14 @@ The following skills are required for certain use cases:
   + Docker for creating images/ containers based on Linux 
   + Docker Hub for storing/ deploying pre-built images 
   + bash scripts for automating the docker build process 
-  + version tags to identify the pulled images
+  + version tags to identify the pulled images 
+  + bash scripts for automating the docker build process 
   
 * coding/ reporting projects 
   + git for version control, tracking changes, branching, etc. 
-  + GitHub for hosting software projects and for providing version control and collaboration features
+  + GitHub for hosting software projects and for providing version control and collaboration features 
   + make for automating the code build process 
-  + version tags to identify the project state
+  + version tags to identify the project state 
   
 The version tag of the Docker Hub images should match the version tag of the GitHub project at any given step in the development process for the images and the project repo. 
 
