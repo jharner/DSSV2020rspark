@@ -86,8 +86,6 @@ The following skills are required for certain use cases:
   + Docker for creating images/ containers based on Linux 
   + Docker Hub for storing/ deploying pre-built images 
   + bash scripts for automating the docker build process
-<!-- Put info about tags
--->
 * coding/ reporting projects 
   + git for version control, tracking changes, branching, etc. 
   + GitHub for hosting software projects and for providing version control and collaboration features
