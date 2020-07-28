@@ -75,6 +75,7 @@ Reproducible computing and reporting require the following underlying skills:
 
 The following skills are required for certain use cases: 
 
+* R package development
 * ansible 
 * Pandoc 
 * TeX/ LaTeX
@@ -93,13 +94,13 @@ The following skills are required for certain use cases:
   + make for automating the code build process 
   + version tags to identify the project state 
   
-The version tag of the Docker Hub images should match the version tag of the GitHub project at any given step in the development process for the images and the project repo. 
+The version tag of the Docker Hub images should match the version tag of the GitHub project at any given step in the development process for the images and the project repo, respectively. 
 
 ## Creating a Reproducible Workflow
 
 * Build the computing environment first, at least approximately. 
   + download a base image from Docker Hub---perhaps just a Linux image, a Rocker image, etc.
-  + write a Dockerfile extending the base image, e.g., R packages  
+  + write a Dockerfile extending the base image, e.g., adding R packages  
   + add configuration files as needed 
   + write shell scripts to automate building/running containers and pushing images to Docker Hub
 
@@ -131,17 +132,17 @@ What if we want additional services that you only want to run occasionally, e.g.
 
 `rspark` historically has been a self-contained Docker application running RStudio, but it is now being broken into three applicatons: 
 
-* `rcompute` with containers `rconnect` and `rpsql` 
-* `rhadoop` with containers `rhive` and `rhadoop` 
-* `rspark-cluster` with conainers `master` and two workers 
+* [`rcompute`](https://github.com/jharner/rcompute) with containers `rconnect` and `rpsql` 
+* [`rhadoop`](https://github.com/jharner/rhadoop) with containers `rhive` and `rhadoop` 
+* [`rspark-cluster`](https://github.com/jharner/rspark-cluster) with conainers `master` and two workers 
 
-`rcompute` runs on an "edge" node, e.g., on your laptop or on a server. This application will probably be adequate for most of your development work, particularly since it can also run a single-node version of Spark for machine learning development.
+`rcompute` runs on an "edge" node, e.g., on your laptop or on a server.  This application will probably be adequate for most of your development work, particularly since it can also run a single-node version of Spark for machine learning development.
 
 `rhadoop` and `rspark-cluster` run more efficiently in the cloud, e.g., in AWS, Digital Ocean, etc., but they can be run locally or on a server (at least for development).
 
 How do these three Docker applications communicate since by default they are on separate networks.
 
-## Anamony of a Docker Container
+## Anamony of a Docker Application
 
 
 
@@ -149,11 +150,22 @@ How do these three Docker applications communicate since by default they are on 
 
 
 
+## Reproducible Demos Using `rspark`
+
+* Database demo 
+* Spark SQL demo
+
 ## Alternative Frontends
 
-The "edge" application, in particular `rconnect`, which contains RStudio Server, can be replaced by other interfaces to Spark. Initial work is being done on `rvim`, which is a Linux container with R installed along with `vim`. We are exploring the `Nvim-R` plugin for `vim`. This is for programmers who prefer a CLI to automate all aspects of the project development.
+The "edge" application, in particular `rconnect`, which contains RStudio Server, can be replaced by other interfaces to Spark. Currently, we are developing:
 
-[Rc$^2$](https://github.com/rc2server) is a native Swift client that communicates with a Swift cloud-based appserver, which in turn can spawns `computes` instances using Kubernetes. The compute instances in turn can communicate with `rhadoop` and `rspark-cluster` to get Hadoop and Spark services.
+* `rvim`, a Linux container with R installed along with `vim`.
+
+We are exploring the `Nvim-R` plugin for `vim`. This is for programmers who prefer a CLI to automate all aspects of the project development.
+
+* [Rc$^2$](https://github.com/rc2server), a native Swift client that communicates with a Swift cloud-based appserver, which spawns C++ `compute` instances using Kubernetes.
+
+The compute instances in turn can communicate with `rhadoop` and `rspark-cluster` to get Hadoop and Spark services.
 
 ##
 
