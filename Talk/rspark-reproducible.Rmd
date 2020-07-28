@@ -86,8 +86,7 @@ The following skills are required for certain use cases:
   + Docker Hub for storing/ deploying pre-built images 
   + bash scripts for automating the docker build process 
   + version tags to identify the pulled images 
-  + bash scripts for automating the docker build process 
-  
+
 * coding/ reporting projects 
   + git for version control, tracking changes, branching, etc. 
   + GitHub for hosting software projects and for providing version control and collaboration features 
