@@ -50,23 +50,21 @@ DevOps (development + operations) has been revolutionized by containers and meth
 
 This presentation focuses on reproducibility which exists at many levels:  
 
-* Repeatable: same data, same code, same user $\leadsto$ same results 
-* Reproducible: same data, same code, different user $\leadsto$ same results  
-* Strong Reproducilbility: same data, different code, different user $\leadsto$ comparable results 
-* Replicable: different data, different code, different user $\leadsto$ comparable results 
-* Generalizable: different data, same code, same or different user $\leadsto$ comparable results 
+* **Repeatable**: same data, same code, same user $\leadsto$ same results 
+* **Reproducible**: same data, same code, different user $\leadsto$ same results \   
+Referee for a journal paper 
+* **Strong Reproducilbility**: same data, different code, different user $\leadsto$ comparable results \   
+Competitions and multiple research teams 
+* **Replicable**: different data, different code, different user $\leadsto$ comparable results \     
+Meta analyses 
+* **Generalizable**: different data, same code, different user $\leadsto$ comparable results \   
+Productizing machine learning algorithm
 
 These definitions (except for the 3rd) are from NSF and assume the same underlying hypotheses.
 
-At a minimum, a referee for a journal paper should be able to reproduce the author's work, i.e., same data, same code, but different user/machine.
-
-Replicability is used for competitions and for studies in which the same data, but nothing else, are given to multiple research teams.
-
-Generalizability is used, e.g., productizing machine learning algorithms, in which new data will be arriving.
-
 ## Basic Tools for Reproducibility
 
-Reproducible computing and reporting require knowledge of the following underlying skills:
+Reproducible computing and reporting require the following underlying skills:
 
 * the Linux CLI 
 * basic bash scripting 
@@ -74,11 +72,12 @@ Reproducible computing and reporting require knowledge of the following underlyi
 * Docker/ Docker Hub 
 * git/ GitHub 
 * R/ Python 
-* Pandoc
 
 The following skills are required for certain use cases: 
 
 * ansible 
+* Pandoc 
+* TeX/ LaTeX
 
 ## Required Environments for Reproducibility
 
@@ -86,35 +85,40 @@ The following skills are required for certain use cases:
   + Docker for creating images/ containers based on Linux 
   + Docker Hub for storing/ deploying pre-built images 
   + bash scripts for automating the docker build process 
+  + version tags to identify the pulled images
+  
 * coding/ reporting projects 
   + git for version control, tracking changes, branching, etc. 
   + GitHub for hosting software projects and for providing version control and collaboration features
   + make for automating the code build process 
+  + version tags to identify the project state
+  
+The version tag of the Docker Hub images should match the version tag of the GitHub project at any given step in the development process for the images and the project repo. 
 
-## Steps for Creating a Reproducible Workflow
+## Creating a Reproducible Workflow
 
 * Build the computing environment first, at least approximately. 
   + download a base image from Docker Hub---perhaps just a Linux image, a Rocker image, etc.
   + write a Dockerfile extending the base image, e.g., R packages  
   + add configuration files as needed 
-  + write shell scripts to automate building and running containers and pushing images to Docker Hub, etc.
+  + write shell scripts to automate building/running containers and pushing images to Docker Hub
 
-Your container (a running instance of an image) must have a development environment, e.g., RStudio, for running code using literate programming---R Markdown is the preferred framework. 
+Your container (a running instance of an image) must have a development environment for running code using literate programminge, e.g., R Markdown. 
 
 * Build the coding environment. 
-  + start a project repository on GitHub, initially with a README file  
-  + clone the GitHub repo to the container runtime 
+  + start a project repository on GitHub, initially with a `README` file  
+  + clone the GitHub repo to the container running the editing environment 
   + use R Markdown for literate programming 
-  + use make to automate the project build process 
+  + use `make` to automate the project build process 
   + stage, commit, and push to GitHub often 
 
 ## Docker Applications
 
 Docker containers run a single service, although there are workarounds. What if you need multiple services, e.g., RStudio and PostgreSQL?
 
-Answer: build a Docker application with `docker-compose`, which builds the images and runs the containers. 
+Answer: build a Docker application with `docker-compose`, which builds multiple images and runs the corresponding containers. 
 
-`rcompute` is Docker applications with two container: one called `rconnect` with an RStudio service the other called `rpsql` with a PostgreSQL service. 
+`rcompute` is Docker applications with two containers: one called `rconnect` with an RStudio service the other called `rpsql` with a PostgreSQL service. 
 
 See: [rcompute](https://github.com/jharner/rcompute)
 
@@ -130,13 +134,47 @@ What if we want additional services that you only want to run occasionally, e.g.
 * `rhadoop` with containers `rhive` and `rhadoop` 
 * `rspark-cluster` with conainers `master` and two workers 
 
-`rcompute` is an edge application and typically would be run on your laptop or on a server. This application will probably do for most of your development work, particularly since it can also run a single-node version of Spark for machine learning development.
+`rcompute` is an "edge" application and typically runs on your laptop or on a server. This application will probably be adequate for most of your development work, particularly since it can also run a single-node version of Spark for machine learning development.
 
-`rhadoop` and `rspark-cluster` will run more efficiently in the cloud, e.g., in AWS, Digital Ocean, etc., but they can be run locally or on a server (at least for development).
+`rhadoop` and `rspark-cluster` run more efficiently in the cloud, e.g., in AWS, Digital Ocean, etc., but they can be run locally or on a server (at least for development).
+
+How do these three Docker applications communicate since by default they are on separate networks.
+
+## Anamony of a Docker Container
+
+
 
 ## `rspark` Networking
 
 
+
+## Alternative Frontends
+
+The "edge" application, in particular `rconnect`, which contains RStudio Server, can be replaced by other interfaces to Spark. Initial work is being done on `rvim`, which is a Linux container with R installed along with `vim`. We are exploring the `Nvim-R` plugin for `vim`. This is for programmers who prefer a CLI to automate all aspects of the project development.
+
+[Rc$^2$](https://github.com/rc2server) is a native Swift client that communicates with a Swift cloud-based appserver, which in turn can spawns `computes` instances using Kubernetes. The compute instances in turn can communicate with `rhadoop` and `rspark-cluster` to get Hadoop and Spark services.
+
+##
+
+![rc2 Architecture](rc2arch.png)
+
+## Future Work
+
+The `rspark` project is being expanded to better facilitate big data and big compute:
+
+* Arrow
+
+Apache Arrow is a software framework for statistical and machine learning applications that process columnar data. It has a column-oriented memory format that is able to represent flat and hierarchical data for efficient operations on modern CPU and GPU hardware. The Arrow memory format supports zero-copy reads for lightning-fast data access without serialization overhead.
+
+* Kubernetes (k8s) 
+
+[Kubernetes](https://www.digitalocean.com/community/tutorials/an-introduction-to-kubernetes) is a platform for running and coordinating related, containerized applications across a cluster of (typically virtual) machines. It manages the complete lifecycles of containerized applications and services
+
+## Why Use `rspark`
+
+
+
+## Old material starts here
 
 ## Docker
 
