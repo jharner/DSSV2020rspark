@@ -3,7 +3,8 @@ title: "Reproducible Computing and Reporting in a Complex Software Environment"
 author: "Jim Harner, WVU; Chris Grant, Rc$^2$ai; Mark Lilback, Rc$^2$ai"
 date: "DSSV 2020"
 output:
-  slidy_presentation: default
+  slidy_presentation:
+    highlight: zenburn
   beamer_presentation: default
 ---
 
@@ -141,13 +142,33 @@ What if we want additional services that you only want to run occasionally, e.g.
 
 How do these three Docker applications communicate since by default they are on separate networks.
 
-## Anamony of a Docker Container
+## Anatomy of a Docker Application
+Docker Objects:
+
+* Image
+* [Volumes](https://docs.docker.com/storage/volumes/)
+* [`tmpfs` Mounts](https://docs.docker.com/storage/tmpfs/) This is useful to temporarily store sensitive files that you don’t want to persist in either the host or the container writable layer.
+* [Storage Drivers](https://docs.docker.com/storage/storagedriver/select-storage-driver/) [About Storage Drivers](https://docs.docker.com/storage/storagedriver/)
+* [Bind Mounts](https://docs.docker.com/storage/bind-mounts/)
+This layer is often called the “container layer”. All changes made to the running container, such as writing new files, modifying existing files, and deleting files, are written to this thin writable container layer.
+* Network
+* Container
+[Docker Documentation](https://docs.docker.com/get-started/overview/#docker-architecture)
+<!-- Image -> (initializes to) Container (with volumes, networks, mounts, and plugins) -->
+
+## Image:
++ A set of instructions outlining the construction of the container.
+
+## Volumes:
+
++ Data storage mechanism for containers.
++ Preferable to using the 'container layer', which is the active, writable layer of the running container image.
++ Storage drivers manage data flow between image layers and between images and volumes.
+## Network:
 
 
 
-## `rspark` Networking
-
-
+##
 
 ## Alternative Frontends
 
