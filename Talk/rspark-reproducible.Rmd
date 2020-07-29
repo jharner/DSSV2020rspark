@@ -157,13 +157,41 @@ What if we want additional services that you only want to run occasionally, e.g.
 
 How do these three Docker applications communicate since by default they are on separate networks.
 
-## Anamony of a Docker Application
+## Images, Containers, and Services
 
+[Docker Architecture](https://docs.docker.com/get-started/overview/#docker-architecture)
 
++ Image:
+    - A set of instructions outlining the construction of the container, including all files, dependencies, and code necessary for execution.
+    - Instructions in the Dockerfile create the layers of the resulting image.  If the build process proceeds to completion, the resulting image can be run utilizing any executable files on its filesystem.
++ Container:
+    - A running instance of an image.
+    - May have additional Docker objects attached, such as data volumes, networks, and plugins.
++ Service:
+    - A container coupled with execution commands and specifications.
+    - Ports exposed to services outside the network.
+    - A network or collection of networks connecting services within the application environment.
+    - Specifications for container behavior and hardware limits.
 
-## `rspark` Networking
+Each service completes *tasks* based on instructions from an *orchestrator*.
 
+## Volumes
 
++ Data storage mechanism for containers.
++ Preferable to using the 'container layer', which is the active, writable layer of the running container image.
++ Volume types:
+    - [Storage Drivers](https://docs.docker.com/storage/storagedriver/select-storage-driver/): Storage drivers manage data flow between image layers and between images and volumes.  [Additional info available here.](https://docs.docker.com/storage/storagedriver/)
+    - [**tmpfs** Mounts](https://docs.docker.com/storage/tmpfs/):  Temporary mounts that do not store data within the container or on the host.
+    - [Bind Mounts](https://docs.docker.com/storage/bind-mounts/): Files or directories on the host machine mounted to one or more Docker containers.
+    - [Docker Volumes](https://docs.docker.com/storage/volumes/): Filesystem bind mounts that are managed by Docker.
+
+## Networks
+
++ Defines the rules by which services interact with one another and with the host system.
++ Docker has several built-in drivers:
+    - The **bridge** driver for local networks, which is the default on Docker Desktop.
+    - The **overlay** driver for distributed networks, e.g., for a **docker swarm**.
+    - Custom driver specifications in the **docker-compose.yml** file can control networking configurations.
 
 ## Reproducible Demos Using `rspark`
 
