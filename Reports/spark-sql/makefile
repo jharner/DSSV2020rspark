@@ -8,3 +8,4 @@ spark-sql.html:
 clean:
 	rm -f *.log
 	rm -rf metastore_db
+	rm -f *.html
