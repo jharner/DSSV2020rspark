@@ -3,8 +3,7 @@ title: "Reproducible Computing and Reporting in a Complex Software Environment"
 author: "Jim Harner, WVU; Chris Grant, Rc$^2$ai; Mark Lilback, Rc$^2$ai"
 date: "DSSV 2020"
 output:
-  slidy_presentation:
-    highlight: zenburn
+  slidy_presentation: default
   beamer_presentation: default
 ---
 
@@ -142,69 +141,41 @@ What if we want additional services that you only want to run occasionally, e.g.
 
 How do these three Docker applications communicate since by default they are on separate networks.
 
-## Anatomy of a Docker Application
-Docker Container Objects:
-+ Image
-+ [Volumes](https://docs.docker.com/storage/volumes/)
-    - [`tmpfs` Mounts](https://docs.docker.com/storage/tmpfs/) This is useful to temporarily store sensitive files that you don’t want to persist in either the host or the container writable layer.
-    - [Storage Drivers](https://docs.docker.com/storage/storagedriver/select-storage-driver/) [About Storage Drivers](https://docs.docker.com/storage/storagedriver/)
-    - [Bind Mounts](https://docs.docker.com/storage/bind-mounts/)
+## Images, Containers, and Services:
+[Docker Architecture](https://docs.docker.com/get-started/overview/#docker-architecture)
 
-+ Network
-+ Container
-[Docker Documentation](https://docs.docker.com/get-started/overview/#docker-architecture)
-<!-- Image -> (initializes to) Container (with volumes, networks, mounts, and plugins) -->
-<!-- This layer is often called the “container layer”. All changes made to the running container, such as writing new files, modifying existing files, and deleting files, are written to this thin writable container layer. -->
-
-## Anatomy of a Docker Application
-
-Docker Container Objects:
-
-+ Services:  One or more containers executing programs.  These containers may be derived from one or more images.
-
-+ Volumes:  The filesystems of each image can be selectively mounted as volumes to store data generated from the application.
-
-+ Networks:  One or more networks may be established to manage service connections between containers and the host system.
-
-+ [Volumes](https://docs.docker.com/storage/volumes/)
-    - [`tmpfs` Mounts](https://docs.docker.com/storage/tmpfs/) Temporary mounts that do not store data within the container or on the host.
-    - [Storage Drivers](https://docs.docker.com/storage/storagedriver/select-storage-driver/) [About Storage Drivers](https://docs.docker.com/storage/storagedriver/)
-    - [Bind Mounts](https://docs.docker.com/storage/bind-mounts/)
-
-<!-- Image -> (initializes to) Container (with volumes, networks, mounts, and plugins) -->
-<!-- This layer is often called the “container layer”. All changes made to the running container, such as writing new files, modifying existing files, and deleting files, are written to this thin writable container layer. -->
-
-## Image:
-
-+ A set of instructions outlining the construction of the container.
-+ Instructions in the Dockerfile create the layers constituting the resulting image.  If the build process proceeds to completion, the resulting image can be run utilizing any executable files on its filesystem.
-
-## Services:
-
-Containers coupled with execution specifications.  May also include:
-+ Ports exposed to services outside the network.
-+ A network or collection of networks connecting services within the application environment.
-+ Specifications for container behavior and hardware limits.
++ Image:
+    - A set of instructions outlining the construction of the container, including all files, dependencies, and code necessary for execution.
+    - Instructions in the Dockerfile create the layers of the resulting image.  If the build process proceeds to completion, the resulting image can be run utilizing any executable files on its filesystem.
++ Container:
+    - A running instance of an image.
+    - May have additional Docker objects attached, such as data volumes, networks, and plugins.
++ Service:
+    - A container coupled with execution commands and specifications.
+    - Ports exposed to services outside the network.
+    - A network or collection of networks connecting services within the application environment.
+    - Specifications for container behavior and hardware limits.
 
 Each service completes *tasks* based on instructions from an *orchestrator*.
-
-
 
 ## Volumes:
 
 + Data storage mechanism for containers.
 + Preferable to using the 'container layer', which is the active, writable layer of the running container image.
-+ Storage drivers manage data flow between image layers and between images and volumes.
++ Volume types:
+    - [Storage Drivers](https://docs.docker.com/storage/storagedriver/select-storage-driver/) Storage drivers manage data flow between image layers and between images and volumes.  [Additional info available here.](https://docs.docker.com/storage/storagedriver/)
+    - [**tmpfs** Mounts](https://docs.docker.com/storage/tmpfs/) Temporary mounts that do not store data within the container or on the host.
+    - [Bind Mounts](https://docs.docker.com/storage/bind-mounts/) Files or directories on the host machine mounted to one or more Docker containers.
+    - [Docker Volumes](https://docs.docker.com/storage/volumes/) Filesystem bind mounts that are managed by Docker.
 
 ## Networks:
 
 + Defines the rules by which services interact with one another and with the host system.
 + Docker has several built-in drivers:
-    - The `bridge` driver for local networks, which is the default on Docker Desktop.
-    - The `overlay` driver for distributed networks, which works with `docker swarm`.
-    - Custom driver specifications in the `docker-compose.yml` file can control networking configurations.
+    - The **bridge** driver for local networks, which is the default on Docker Desktop.
+    - The **overlay** driver for distributed networks, which works with **docker swarm**.
+    - Custom driver specifications in the **docker-compose.yml** file can control networking configurations.
 
-##
 
 ## Alternative Frontends
 
@@ -404,43 +375,5 @@ The basic Kubernetes unit is the pod. Containers are assigned to pods---not host
 Kubernetes is available on AWS, Azure, and of course Google Cloud as a service. However, these cloud providers do not have predictable price models and users/developers can incur large unexpected costs.
 
 [Digital Ocean Kubernetes](https://www.digitalocean.com/products/kubernetes/) gives the user far more control over these costs, i.e., limits can be set and the user is only charged for what is actually used.
-
-
-
-
-
-
-
-
-<!--
-```{r include=False}
-library("DiagrammeR")
-digraph boxes_and_circles {
-    # Graph instantiation
-    graph [overlap=true, fontsize=10]
-
-    # Nodes
-    node [shape=box, fontname=Helvetica]
-    Images; Compose; Services
-
-    node [shape=circle, fixedsize=true, width=1.0]
-    Volumes; Networks; Plugins
-
-    node [shape=circle, fixed_size=true, width=0.5]
-    volume_1; volume_2; volume...; volume_n;
-    network_1; network_2; network...; network_n;
-    plugin_1; plugin_2; plugin...; plugin_n
-    # Edges
-    Images->Compose Compose->Services Volumes->Compose Networks->Compose Plugins->Compose
-    volume_1->Volumes volume_2->Volumes volume...->Volumes volume_n->Volumes
-    network_1->Networks network_2->Networks network...->Networks network_n->Networks
-    plugin_1->Plugins plugin_2->Plugins plugin...->Plugins plugin_n->Plugins
-
-}
-```
--->
-
-
-
 
 
