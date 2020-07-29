@@ -119,14 +119,14 @@ Docker containers run a single service, although there are workarounds. What if 
 
 Answer: build a Docker application with `docker-compose`, which builds multiple images (`docker-compose build`) and starts the corresponding containers (`docker-compose up`). 
 
-[`rcompute`](https://github.com/jharner/rcompute) is Docker applications with two containers:  
+[`rcompute`](https://github.com/jharner/rcompute) is a Docker application with two containers:
 
 * `rconnect` with an RStudio service;
 * `rpsql` with a PostgreSQL service. 
 
-By default, the containers within a Docker application are on the same network. Communication is done through defined ports. 
+By default, the containers within a Docker application are on the same network. Communication occurs through defined ports.
 
-What if we want additional services that you only want to run occasionally, e.g., Hadoop or Spark? Or, what if we want to run some services locally and some on a cloud platform?
+What if we want additional services that you only want to run occasionally, e.g., Hadoop or Spark? Or, what if we want to run some services locally and some services on a cloud platform?
 
 ## Multiple Docker Applications in `rspark` 
 
@@ -143,30 +143,66 @@ What if we want additional services that you only want to run occasionally, e.g.
 How do these three Docker applications communicate since by default they are on separate networks.
 
 ## Anatomy of a Docker Application
-Docker Objects:
+Docker Container Objects:
++ Image
++ [Volumes](https://docs.docker.com/storage/volumes/)
+    - [`tmpfs` Mounts](https://docs.docker.com/storage/tmpfs/) This is useful to temporarily store sensitive files that you don’t want to persist in either the host or the container writable layer.
+    - [Storage Drivers](https://docs.docker.com/storage/storagedriver/select-storage-driver/) [About Storage Drivers](https://docs.docker.com/storage/storagedriver/)
+    - [Bind Mounts](https://docs.docker.com/storage/bind-mounts/)
 
-* Image
-* [Volumes](https://docs.docker.com/storage/volumes/)
-* [`tmpfs` Mounts](https://docs.docker.com/storage/tmpfs/) This is useful to temporarily store sensitive files that you don’t want to persist in either the host or the container writable layer.
-* [Storage Drivers](https://docs.docker.com/storage/storagedriver/select-storage-driver/) [About Storage Drivers](https://docs.docker.com/storage/storagedriver/)
-* [Bind Mounts](https://docs.docker.com/storage/bind-mounts/)
-This layer is often called the “container layer”. All changes made to the running container, such as writing new files, modifying existing files, and deleting files, are written to this thin writable container layer.
-* Network
-* Container
++ Network
++ Container
 [Docker Documentation](https://docs.docker.com/get-started/overview/#docker-architecture)
 <!-- Image -> (initializes to) Container (with volumes, networks, mounts, and plugins) -->
+<!-- This layer is often called the “container layer”. All changes made to the running container, such as writing new files, modifying existing files, and deleting files, are written to this thin writable container layer. -->
+
+## Anatomy of a Docker Application
+
+Docker Container Objects:
+
++ Services:  One or more containers executing programs.  These containers may be derived from one or more images.
+
++ Volumes:  The filesystems of each image can be selectively mounted as volumes to store data generated from the application.
+
++ Networks:  One or more networks may be established to manage service connections between containers and the host system.
+
++ [Volumes](https://docs.docker.com/storage/volumes/)
+    - [`tmpfs` Mounts](https://docs.docker.com/storage/tmpfs/) Temporary mounts that do not store data within the container or on the host.
+    - [Storage Drivers](https://docs.docker.com/storage/storagedriver/select-storage-driver/) [About Storage Drivers](https://docs.docker.com/storage/storagedriver/)
+    - [Bind Mounts](https://docs.docker.com/storage/bind-mounts/)
+
+<!-- Image -> (initializes to) Container (with volumes, networks, mounts, and plugins) -->
+<!-- This layer is often called the “container layer”. All changes made to the running container, such as writing new files, modifying existing files, and deleting files, are written to this thin writable container layer. -->
 
 ## Image:
+
 + A set of instructions outlining the construction of the container.
++ Instructions in the Dockerfile create the layers constituting the resulting image.  If the build process proceeds to completion, the resulting image can be run utilizing any executable files on its filesystem.
+
+## Services:
+
+Containers coupled with execution specifications.  May also include:
++ Ports exposed to services outside the network.
++ A network or collection of networks connecting services within the application environment.
++ Specifications for container behavior and hardware limits.
+
+Each service completes *tasks* based on instructions from an *orchestrator*.
+
+
 
 ## Volumes:
 
 + Data storage mechanism for containers.
 + Preferable to using the 'container layer', which is the active, writable layer of the running container image.
 + Storage drivers manage data flow between image layers and between images and volumes.
-## Network:
 
+## Networks:
 
++ Defines the rules by which services interact with one another and with the host system.
++ Docker has several built-in drivers:
+    - The `bridge` driver for local networks, which is the default on Docker Desktop.
+    - The `overlay` driver for distributed networks, which works with `docker swarm`.
+    - Custom driver specifications in the `docker-compose.yml` file can control networking configurations.
 
 ##
 
@@ -376,8 +412,33 @@ Kubernetes is available on AWS, Azure, and of course Google Cloud as a service. 
 
 
 
+<!--
+```{r include=False}
+library("DiagrammeR")
+digraph boxes_and_circles {
+    # Graph instantiation
+    graph [overlap=true, fontsize=10]
 
+    # Nodes
+    node [shape=box, fontname=Helvetica]
+    Images; Compose; Services
 
+    node [shape=circle, fixedsize=true, width=1.0]
+    Volumes; Networks; Plugins
+
+    node [shape=circle, fixed_size=true, width=0.5]
+    volume_1; volume_2; volume...; volume_n;
+    network_1; network_2; network...; network_n;
+    plugin_1; plugin_2; plugin...; plugin_n
+    # Edges
+    Images->Compose Compose->Services Volumes->Compose Networks->Compose Plugins->Compose
+    volume_1->Volumes volume_2->Volumes volume...->Volumes volume_n->Volumes
+    network_1->Networks network_2->Networks network...->Networks network_n->Networks
+    plugin_1->Plugins plugin_2->Plugins plugin...->Plugins plugin_n->Plugins
+
+}
+```
+-->
 
 
 
