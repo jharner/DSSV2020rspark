@@ -135,7 +135,7 @@ Docker containers run a single service, although there are workarounds. What if 
 
 Answer: build a Docker application with `docker-compose`, which builds multiple images (`docker-compose build`) and starts the corresponding containers (`docker-compose up`). 
 
-[`rcompute`](https://github.com/jharner/rcompute) is Docker applications with two containers:  
+[`rcompute`](https://github.com/jharner/rcompute) is a Docker application with two containers:  
 
 * `rconnect` with an RStudio service;
 * `rpsql` with a PostgreSQL service. 
@@ -164,7 +164,7 @@ How do these three Docker applications communicate since by default they are on 
 
 * Images:
     + A set of instructions in a Dockerfile detailing the construction of the container, including all files, dependencies, and code necessary for execution.
-    + Instructions in the Dockerfile create the layers of the resulting image.  If the build process proceeds to completion, the resulting image can be run utilizing any executable files on its filesystem.
+    + Instructions in the Dockerfile create the layers of the resulting image.  If the build process proceeds to completion, the resulting image can be run utilizing any executable files on its filesystem using `docker exec`, but there is a specified entry point.
     
 * Containers:
     + A running instance of an image.
@@ -190,9 +190,10 @@ Both volumes and bind mounts allow you to share files between the host machine a
 
 * Defines the rules by which services interact with one another and with the host system. 
 * Docker has several built-in drivers:
-    + The [**bridge** driver](https://docs.docker.com/network/bridge/) for local networks, i.e., containers running on the same host, which is the default on Docker Desktop.
-    + The [**overlay** driver](https://docs.docker.com/network/overlay/) for distributed networks, i.e., containers running on different hosts, e.g., a **docker swarm**.
-    + Custom driver specifications in the **docker-compose.yml** file for controlling networking configurations.
+    + The [`bridge` driver](https://docs.docker.com/network/bridge/) for local networks, i.e., containers running on the same host, which is the default on Docker Desktop.
+    + The [`overlay` driver](https://docs.docker.com/network/overlay/) for distributed networks, i.e., containers running on different hosts, e.g., a
+Docker Swarm.
+    + Custom driver specifications in the `docker-compose.yml` file for controlling networking configurations.
     
 In the `rconnect` RStudio environment, PostgreSQL can be reached by: \
 postgres://rpsql:5432
