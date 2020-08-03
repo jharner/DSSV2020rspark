@@ -53,15 +53,15 @@ DevOps (development + operations) has been revolutionized by containers and meth
 The following variants of reproducibility assume the same underlying hypotheses:  
 
 * **Repeatable**: same data, code, and user $\leadsto$ same results \
-Time dependent
+Ex.: Repeatable over long time periods
 * **Reproducible**: same data and code, but different users $\leadsto$ same results \   
-Referee for a journal paper 
+Ex.: Referee for a journal paper 
 * **Strongly Reproducilble**: same data, but different code and users $\leadsto$ comparable results \   
-Competitions and multiple research teams 
+Ex.: Competitions and multiple research teams 
 * **Replicable**: different data, different code, different user $\leadsto$ comparable results \     
-Meta analyses 
+Ex.: Meta analyses 
 * **Generalizable**: different data, same code, different user $\leadsto$ comparable results \   
-Productizing machine learning algorithm
+Ex.: Productionizing machine learning algorithm
 
 These definitions (except for the 3rd) are from NSF.
 
@@ -221,7 +221,7 @@ We are exploring the `Nvim-R` plugin for `vim`. This is for programmers who pref
 
 The compute instances in turn can communicate with `rhadoop` and `rspark-cluster` to get Hadoop and Spark services.
 
-##
+## Rc$^2$ Architecture
 
 ![rc2 Architecture](rc2arch.png)
 
@@ -290,4 +290,24 @@ JupyterHub allows instances of a single-user Jupyter notebook to be spawned and 
 Example: [RStudio Server Pro with Launcher and Kubernetes](https://support.rstudio.com/hc/en-us/articles/360021328733-FAQ-for-RStudio-Server-Pro-with-Launcher-and-Kubernetes)
 
 RStudio Server is not supported, i.e., Launcher is a Pro product.
+
+## Back to Reproducibility
+
+The `DSSV2020rspark` repo on GitHub contains this presentation and two reports. I will not make these documents fully reproducible by versioning the repo in GitHub and the corresponding images for `rspark` in Docker Hub. However, I would make a paper submitted to JDSSV reproducible.
+
+The following would be needed:  
+
+* a GitHub repo specifically for the paper;  
+* a Docker application for the infrastructure.  
+
+The Docker application would simply pull the required versioned `rspark` images from Docker Hub using a `docker-compose` file, i.e., the user would not need to write a Dockerfile. Further the versioned paper repo would be cloned into the `rconnect` image, allowing the editor and referees to reproduce the paper simply by calling `make`. Further, they could experiment with the code, edit the text, and even install additional R packages. 
+
+
+
+
+
+
+
+
+
 
