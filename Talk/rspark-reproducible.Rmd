@@ -1,5 +1,5 @@
 ---
-title: "Reproducible Computing and Reporting\   in a Complex Software Environment"
+title: "Reproducible Computing and Reporting \   in a Complex Software Environment"
 author: "Jim Harner, WVU; Chris Grant, Rc$^2$ai; Mark Lilback, Rc$^2$ai"
 date: "DSSV 2020"
 output:
@@ -56,7 +56,7 @@ The following variants of reproducibility assume the same underlying hypotheses:
 Ex.: Repeatable over long time periods
 * **Reproducible**: same data and code, but different users $\leadsto$ same results \   
 Ex.: Referee for a journal paper 
-* **Strongly Reproducilble**: same data, but different code and users $\leadsto$ comparable results \   
+* **Strongly Reproducible**: same data, but different code and users $\leadsto$ comparable results \   
 Ex.: Competitions and multiple research teams 
 * **Replicable**: different data, different code, different user $\leadsto$ comparable results \     
 Ex.: Meta analyses 
@@ -107,7 +107,7 @@ The version tag of the Docker Hub images should match the version tag of the Git
   + add configuration files as needed 
   + write shell scripts to automate building/running containers and pushing images to Docker Hub
 
-Your container (a running instance of an image) must have a development environment for running code using literate programminge, e.g., R Markdown. 
+Your container (a running instance of an image) must have a development environment for running code using literate programming, e.g., R Markdown. 
 
 * Build the coding environment. 
   + start a project repository on GitHub, initially with a `README` file  
@@ -148,11 +148,11 @@ What if we want additional services that you only want to run occasionally, e.g.
 
 ## Multiple Docker Applications in `rspark` 
 
-`rspark` historically has been a self-contained Docker application running RStudio, but it is now being broken into three applicatons: 
+`rspark` historically has been a self-contained Docker application running RStudio, but it is now being broken into three applications: 
 
 * [`rcompute`](https://github.com/jharner/rcompute) with containers `rconnect` and `rpsql` 
 * [`rhadoop`](https://github.com/jharner/rhadoop) with containers `rhive` and `rhadoop` 
-* [`rspark-cluster`](https://github.com/jharner/rspark-cluster) with conainers `master` and two workers 
+* [`rspark-cluster`](https://github.com/jharner/rspark-cluster) with containers `master` and two workers 
 
 `rcompute` runs on an "edge" node, e.g., on your laptop or on a server.  This application will probably be adequate for most of your development work, particularly since it can also run a single-node version of Spark for machine learning development.
 
@@ -184,7 +184,7 @@ A Docker application is created by a `docker-compose` file, which declares servi
   + [Bind Mounts](https://docs.docker.com/storage/bind-mounts/): Files or directories on the host machine mounted to one or more Docker containers. 
   + [Docker Volumes](https://docs.docker.com/storage/volumes/): Filesystem bind mounts that are managed by Docker.
   
-Boths volumes and bind mounts allow you to share files between the host machine and container so that you can persist data even after the container is stopped.
+Both volumes and bind mounts allow you to share files between the host machine and container so that you can persist data even after the container is stopped.
 
 ## Docker Applications: Networks
 
@@ -192,7 +192,7 @@ Boths volumes and bind mounts allow you to share files between the host machine 
 * Docker has several built-in drivers:
     + The [**bridge** driver](https://docs.docker.com/network/bridge/) for local networks, i.e., containers running on the same host, which is the default on Docker Desktop.
     + The [**overlay** driver](https://docs.docker.com/network/overlay/) for distributed networks, i.e., containers running on different hosts, e.g., a **docker swarm**.
-    + Custom driver specifications in the **docker-compose.yml** file for controling networking configurations.
+    + Custom driver specifications in the **docker-compose.yml** file for controlling networking configurations.
     
 In the `rconnect` RStudio environment, PostgreSQL can be reached by: \
 postgres://rpsql:5432
@@ -257,7 +257,7 @@ Nice speedup, but not as substantial as above since `sparklyr` already collects 
 
 * Custom transformations using R functions in Spark
 
-`spark_apply` with an R function converts the row format of Spark DataFrames to columnar format in parallel. No serializaton or deserializatoin needed. The speedup is substantial.
+`spark_apply` with an R function converts the row format of Spark DataFrames to columnar format in parallel. No serialization or deserialization needed. The speedup is substantial.
 
 Arrow also works with HDFS and Parquet files. 
 
@@ -302,7 +302,7 @@ The following would be needed:
 * a GitHub repo specifically for the paper;  
 * a Docker application for the infrastructure.  
 
-The Docker application would simply pull the required versioned `rspark` images from Docker Hub using a `docker-compose` file, i.e., the user would not need to write a Dockerfile. Further the versioned paper repo would be cloned into the `rconnect` image, allowing the editor and referees to reproduce the paper simply by calling `make`. Further, they could experiment with the code, suggest edits the text, and even install additional R packages. 
+The Docker application would simply pull the required versioned `rspark` images from Docker Hub using a `docker-compose` file, i.e., the user would not need to write a Dockerfile. The versioned paper repo will be cloned into the `rconnect` image, allowing the editor and referees to reproduce the paper simply by calling `make`. Further, they could experiment with the code, suggest edits to the text, and even install additional R packages. 
 
 
 
