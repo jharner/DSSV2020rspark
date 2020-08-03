@@ -61,7 +61,7 @@ Ex.: Competitions and multiple research teams
 * **Replicable**: different data, different code, different user $\leadsto$ comparable results \     
 Ex.: Meta analyses 
 * **Generalizable**: different data, same code, different user $\leadsto$ comparable results \   
-Ex.: Productionizing machine learning algorithm
+Ex.: Productionizing a machine learning algorithm
 
 These definitions (except for the 3rd) are from NSF.
 
@@ -160,7 +160,7 @@ What if we want additional services that you only want to run occasionally, e.g.
 
 How do these three Docker applications communicate since by default they are on separate networks.
 
-## [Docker Architecture](https://docs.docker.com/get-started/overview/#docker-architecture)
+## [Docker Container Architecture](https://docs.docker.com/get-started/overview/#docker-architecture)
 
 * Images:
     + A set of instructions in a Dockerfile detailing the construction of the container, including all files, dependencies, and code necessary for execution.
@@ -184,30 +184,32 @@ A Docker application is created by a `docker-compose` file, which declares servi
   + [Bind Mounts](https://docs.docker.com/storage/bind-mounts/): Files or directories on the host machine mounted to one or more Docker containers. 
   + [Docker Volumes](https://docs.docker.com/storage/volumes/): Filesystem bind mounts that are managed by Docker.
   
-Boths volumes and bind mounts allow you share files between the host machine and container so that you can persist data even after the container is stopped.
+Boths volumes and bind mounts allow you to share files between the host machine and container so that you can persist data even after the container is stopped.
 
 ## Docker Applications: Networks
 
 * Defines the rules by which services interact with one another and with the host system. 
 * Docker has several built-in drivers:
     + The [**bridge** driver](https://docs.docker.com/network/bridge/) for local networks, i.e., containers running on the same host, which is the default on Docker Desktop.
-    + The [**overlay** driver](https://docs.docker.com/network/overlay/) for distributed networks, i.e., containers running on different hosts, e.g., for a **docker swarm**.
-    + Custom driver specifications in the **docker-compose.yml** file can control networking configurations.
+    + The [**overlay** driver](https://docs.docker.com/network/overlay/) for distributed networks, i.e., containers running on different hosts, e.g., a **docker swarm**.
+    + Custom driver specifications in the **docker-compose.yml** file for controling networking configurations.
     
-In `rconnect` PostgreSQL can be reached by: \
+In the `rconnect` RStudio environment, PostgreSQL can be reached by: \
 postgres://rpsql:5432
 
 Likewise, Spark can be reached by: \
 spark://master:7077
 
-See: [https://github.com/jharner/rspark-tutorial](https://github.com/jharner/rspark-tutorial)
+For examples, see: [https://github.com/jharner/rspark-tutorial](https://github.com/jharner/rspark-tutorial)
 
 ## Reproducible Demos Using `rspark`
 
 * Database demo run from a Makefile 
 * Spark SQL demo run from a Makefile
 
-See the Reports directory in the repo for this talk: [https://github.com/jharner/DSSV2020rspark](https://github.com/jharner/DSSV2020rspark)
+See the files in the Reports directory in the repo for this talk: [https://github.com/jharner/DSSV2020rspark](https://github.com/jharner/DSSV2020rspark). 
+
+Run the `make` files to produce the reports.
 
 ## Alternative Frontends
 
@@ -251,7 +253,7 @@ Using `arrow` with `sparklyr` does not require serialization in R or persisting 
 
 * Collecting data from Spark to R with `collect`
 
-Nice speedup, but not substantial since `sparklyr` already collects data in columnar format.
+Nice speedup, but not as substantial as above since `sparklyr` already collects data in columnar format.
 
 * Custom transformations using R functions in Spark
 
@@ -300,7 +302,7 @@ The following would be needed:
 * a GitHub repo specifically for the paper;  
 * a Docker application for the infrastructure.  
 
-The Docker application would simply pull the required versioned `rspark` images from Docker Hub using a `docker-compose` file, i.e., the user would not need to write a Dockerfile. Further the versioned paper repo would be cloned into the `rconnect` image, allowing the editor and referees to reproduce the paper simply by calling `make`. Further, they could experiment with the code, edit the text, and even install additional R packages. 
+The Docker application would simply pull the required versioned `rspark` images from Docker Hub using a `docker-compose` file, i.e., the user would not need to write a Dockerfile. Further the versioned paper repo would be cloned into the `rconnect` image, allowing the editor and referees to reproduce the paper simply by calling `make`. Further, they could experiment with the code, suggest edits the text, and even install additional R packages. 
 
 
 
