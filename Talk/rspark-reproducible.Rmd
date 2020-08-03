@@ -1,10 +1,10 @@
 ---
-title: "Reproducible Computing and Reporting in a Complex Software Environment"
+title: "Reproducible Computing and Reporting\   in a Complex Software Environment"
 author: "Jim Harner, WVU; Chris Grant, Rc$^2$ai; Mark Lilback, Rc$^2$ai"
 date: "DSSV 2020"
 output:
-  slidy_presentation: default
   beamer_presentation: default
+  slidy_presentation: default
 ---
 
 ```{r setup, include=FALSE}
@@ -21,6 +21,8 @@ RHadoop: [https://github.com/jharner/rhadoop](https://github.com/jharner/rhadoop
 
 RSpark-cluster: [https://github.com/jharner/rspark-cluster](https://github.com/jharner/rspark-cluster)
 
+RSpark: [https://github.com/jharner/rspark](https://github.com/jharner/rspark)
+
 RSpark Tutorial: [https://github.com/jharner/rspark-tutorial](https://github.com/jharner/rspark-tutorial)
 
 Rc$^2$ Server: [https://github.com/rc2server](https://github.com/rc2server)
@@ -29,7 +31,7 @@ Rc$^2$ Swift Client: [https://github.com/mlilback/rc2SwiftClient](https://github
 
 Rocker Project: [https://www.rocker-project.org](https://www.rocker-project.org)
 
-Jupyter Docker Stacks: [https://github.com/jupyter/docker-stacks](https://github.com/jupyter/docker-stacks)
+Jupyter Docker Stacks: [https://github.com/jupyter/docker-stacks](https://github.com/jupyter/docker-stacks) 
 
 ## DevOps for Data Science
 
@@ -48,19 +50,20 @@ DevOps (development + operations) has been revolutionized by containers and meth
 
 ## Reproducibility
 
-This presentation focuses on reproducibility which exists at many levels:  
+The following variants of reproducibility assume the same underlying hypotheses:  
 
-* **Repeatable**: same data, same code, same user $\leadsto$ same results 
-* **Reproducible**: same data, same code, different user $\leadsto$ same results \   
+* **Repeatable**: same data, code, and user $\leadsto$ same results \
+Time dependent
+* **Reproducible**: same data and code, but different users $\leadsto$ same results \   
 Referee for a journal paper 
-* **Strong Reproducilbility**: same data, different code, different user $\leadsto$ comparable results \   
+* **Strongly Reproducilble**: same data, but different code and users $\leadsto$ comparable results \   
 Competitions and multiple research teams 
 * **Replicable**: different data, different code, different user $\leadsto$ comparable results \     
 Meta analyses 
 * **Generalizable**: different data, same code, different user $\leadsto$ comparable results \   
 Productizing machine learning algorithm
 
-These definitions (except for the 3rd) are from NSF and assume the same underlying hypotheses.
+These definitions (except for the 3rd) are from NSF.
 
 ## Basic Tools for Reproducibility
 
@@ -91,7 +94,7 @@ The following skills are required for certain use cases:
 * coding/ reporting projects 
   + git for version control, tracking changes, branching, etc. 
   + GitHub for hosting software projects and for providing version control and collaboration features 
-  + make for automating the code build process 
+  + make for automating the code/ report build process 
   + version tags to identify the project state 
   
 The version tag of the Docker Hub images should match the version tag of the GitHub project at any given step in the development process for the images and the project repo, respectively. 
@@ -157,46 +160,54 @@ What if we want additional services that you only want to run occasionally, e.g.
 
 How do these three Docker applications communicate since by default they are on separate networks.
 
-## Images, Containers, and Services
+## [Docker Architecture](https://docs.docker.com/get-started/overview/#docker-architecture)
 
-[Docker Architecture](https://docs.docker.com/get-started/overview/#docker-architecture)
+* Images:
+    + A set of instructions in a Dockerfile detailing the construction of the container, including all files, dependencies, and code necessary for execution.
+    + Instructions in the Dockerfile create the layers of the resulting image.  If the build process proceeds to completion, the resulting image can be run utilizing any executable files on its filesystem.
+    
+* Containers:
+    + A running instance of an image.
+    + Additional Docker objects specified, such as data volumes, networks, and plugins.
+    
+## Docker Application Architecture
 
-+ Image:
-    - A set of instructions outlining the construction of the container, including all files, dependencies, and code necessary for execution.
-    - Instructions in the Dockerfile create the layers of the resulting image.  If the build process proceeds to completion, the resulting image can be run utilizing any executable files on its filesystem.
-+ Container:
-    - A running instance of an image.
-    - May have additional Docker objects attached, such as data volumes, networks, and plugins.
-+ Service:
-    - A container coupled with execution commands and specifications.
-    - Ports exposed to services outside the network.
-    - A network or collection of networks connecting services within the application environment.
-    - Specifications for container behavior and hardware limits.
+A Docker application is created by a `docker-compose` file, which declares services, volumes, and networks:
 
-Each service completes *tasks* based on instructions from an *orchestrator*.
+* Services:
+  + A container coupled with execution commands and specifications.
+  - Ports exposed to services outside the network.
+  + A network or collection of networks connecting services within the application environment.
+  + Specifications for container behavior and hardware limits.
+    
+* Volumes:
+  + [Bind Mounts](https://docs.docker.com/storage/bind-mounts/): Files or directories on the host machine mounted to one or more Docker containers. 
+  + [Docker Volumes](https://docs.docker.com/storage/volumes/): Filesystem bind mounts that are managed by Docker.
+  
+Boths volumes and bind mounts allow you share files between the host machine and container so that you can persist data even after the container is stopped.
 
-## Volumes
+## Docker Applications: Networks
 
-+ Data storage mechanism for containers.
-+ Preferable to using the 'container layer', which is the active, writable layer of the running container image.
-+ Volume types:
-    - [Storage Drivers](https://docs.docker.com/storage/storagedriver/select-storage-driver/): Storage drivers manage data flow between image layers and between images and volumes.  [Additional info available here.](https://docs.docker.com/storage/storagedriver/)
-    - [**tmpfs** Mounts](https://docs.docker.com/storage/tmpfs/):  Temporary mounts that do not store data within the container or on the host.
-    - [Bind Mounts](https://docs.docker.com/storage/bind-mounts/): Files or directories on the host machine mounted to one or more Docker containers.
-    - [Docker Volumes](https://docs.docker.com/storage/volumes/): Filesystem bind mounts that are managed by Docker.
+* Defines the rules by which services interact with one another and with the host system. 
+* Docker has several built-in drivers:
+    + The [**bridge** driver](https://docs.docker.com/network/bridge/) for local networks, i.e., containers running on the same host, which is the default on Docker Desktop.
+    + The [**overlay** driver](https://docs.docker.com/network/overlay/) for distributed networks, i.e., containers running on different hosts, e.g., for a **docker swarm**.
+    + Custom driver specifications in the **docker-compose.yml** file can control networking configurations.
+    
+In `rconnect` PostgreSQL can be reached by: \
+postgres://rpsql:5432
 
-## Networks
+Likewise, Spark can be reached by: \
+spark://master:7077
 
-+ Defines the rules by which services interact with one another and with the host system.
-+ Docker has several built-in drivers:
-    - The **bridge** driver for local networks, which is the default on Docker Desktop.
-    - The **overlay** driver for distributed networks, e.g., for a **docker swarm**.
-    - Custom driver specifications in the **docker-compose.yml** file can control networking configurations.
+See: [https://github.com/jharner/rspark-tutorial](https://github.com/jharner/rspark-tutorial)
 
 ## Reproducible Demos Using `rspark`
 
-* Database demo 
-* Spark SQL demo
+* Database demo run from a Makefile 
+* Spark SQL demo run from a Makefile
+
+See the Reports directory in the repo for this talk: [https://github.com/jharner/DSSV2020rspark](https://github.com/jharner/DSSV2020rspark)
 
 ## Alternative Frontends
 
@@ -227,6 +238,28 @@ See the talk on Thursday at 11:25 am on Data Science Technology.
 * Kubernetes (k8s) 
 
 [Kubernetes](https://www.digitalocean.com/community/tutorials/an-introduction-to-kubernetes) is a platform for running and coordinating related, containerized applications across a cluster of (typically virtual) machines. It manages the complete lifecycles of containerized applications and services
+
+## Arrow in R and Spark
+
+The R package `arrow` provides a `dplyr` interface to Arrow Datasets. You can use `open_dataset` to read a directory of data files and `dplyr` for querying. 
+
+Spark applications using `arrow` with R (similar with pandas): 
+
+* Copying data from R to Spark with `copy_to`
+
+Using `arrow` with `sparklyr` does not require serialization in R or persisting data to disk. The speedup is substantial using `arrow`.
+
+* Collecting data from Spark to R with `collect`
+
+Nice speedup, but not substantial since `sparklyr` already collects data in columnar format.
+
+* Custom transformations using R functions in Spark
+
+`spark_apply` with an R function converts the row format of Spark DataFrames to columnar format in parallel. No serializaton or deserializatoin needed. The speedup is substantial.
+
+Arrow also works with HDFS and Parquet files. 
+
+Feather is a file format for storing Arrow tables from Python and R data frames. This allows fast interoperability.
 
 ## Kubernetes Architecture
 
