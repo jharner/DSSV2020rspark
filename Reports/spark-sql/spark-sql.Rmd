@@ -1,0 +1,119 @@
+---
+title: "Using Spark as a dplyr Backend"
+author: "Jim Harner"
+date: "7/29/2020"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+The `dplyr` package is part of the `tidyverse`. It provides a grammar of data manipulation using a set of verbs for transforming tibbles (or data frames) in R or across various backend data sources.
+```{r}
+library(dplyr, warn.conflicts = FALSE)
+library(lubridate)
+library(ggplot2)
+```
+
+Load `sparklyr` and establish the Spark connection.
+```{r}
+library(sparklyr)
+# start the sparklyr session
+# master <- "local"
+master <- "spark://master:7077"
+sc <- spark_connect(master = master)
+```
+`sparklyr` has a `dplyr` compatible back-end to Spark.
+
+This section illustrates `dplyr` using the NYC flight departures data as a context.
+```{r}
+library(nycflights13)
+```
+
+## Data manipulation with `dplyr`
+
+This section explores the main functions in `dplyr` which Hadley Wickham describes as a *grammar of data manipulation*---the counterpoint to his *grammar of graphics* in `ggplot2`.
+
+The github repo for [`dplyr`](https://github.com/hadley/dplyr) not only houses the R code, but also vignettes for various use cases. The introductory vignette is a good place to start and can by viewed by typing the following on the command line: `vignette("dplyr", package = "dplyr")` or by opening the `dplyr.Rmd` file in the vignettes directory of the `dplyr` repo. The material for this section is based on content from Hadley Wickham's [Introduction to dplyr Vignette](https://github.com/hadley/dplyr/blob/master/vignettes/dplyr.Rmd). 
+
+`dplyr` was designed to:  
+
+* provide commonly used data manipulation tools;  
+* have fast performance for in-memory operations;  
+* abstract the interface between the data manipulation operations and the data source.
+
+`dplyr` operates on data frames, but it also operates on tibbles, a trimmed-down version of a data frame (`tbl_df`) that provides better checking and printing. Tibbles are particularly good for large data sets since they only print the first 10 rows and the first 7 columns by default although additional information is provided about the rows and columns.
+
+The real power of `dplyr` is that it abstracts the data source, i.e., whether it is a data frame, a database, or Spark.
+
+```{r}
+flights_sdf <- copy_to(sc, flights, "flights",  overwrite = TRUE)
+```
+
+All the `dplyr` vignettes use the `nycflights13` data which contain the 336,776 flights that departed from New York City in 2013. The `flights`  tibble is one of several data sets in the package. 
+```{r}
+dim(flights)
+flights # or print(flights)
+```
+The variable names in `flights` are self explanatory, but note that `flights` does not print like a regular data frame. This is because it is a *tibble*, which is designed for data with a lot of rows and/or columns, i.e., big data. The `print` function combines features of `head` and `str` in providing information about the tibble. Alternatively, we can use `str()` to give information about tibles or data frames.  
+```{r}
+str(flights)
+```
+
+The `time_hour` variable in the `flights` data is encoded using the POSIXct format, which is identical to the format used for `time_hour` in the `weather` data of Section 3.1.4. The `time_hour` variable can be computed using the `make_datetime` function from the `ludridate` package with `year`, `month`, `day`, and `hour` as arguments. The flights table could be joined to the weather table using `time_hour` and `origin` as keys, which at least in principle allows us to model `dep_delay` in terms of the weather variables.
+
+We could also define a `time_min` variable as follows:
+```{r}
+make_datetime(year = flights$year, month = flights$month, day = flights$day,
+              hour = flights$hour, min = flights$minute)[1:5]
+```
+This would allow us to model `dep_delay` at a finer level of granularity, but unfortunately the weather variables are only measured to the nearest hour.
+
+### Single Table Verbs
+
+`dplyr` provides a suite of verbs for data manipulation:  
+
+* `filter`: select rows in a data frame;  
+* `arrange`: reorder rows in a data frame;  
+* `select`: select columns in a data frame;  
+* `distinct`: find unique values in a table;  
+* `mutate`: add new columns to a data frame;  
+* `summarise`: collapses a data frame to a single row;  
+* `sample_n`: take a random sample of rows.  
+
+### Grouped Operations
+
+These above verbs become very powerful when you apply them to groups of observations within a dataset. In `dplyr`, this is done by the `group_by()` function. It breaks a dataset into specified groups of rows. When you then apply the verbs above on the resulting object they'll be automatically applied "by group." 
+
+### Chaining
+
+The `dplyr` API is *functional*, i.e., the function calls don't have *side-effects*. That means you must always save intermediate results, which doesn't lead to elegant code.
+
+The `%>%` R operator is somewhat like UNIX pipes in which the standard output of one command becomes the standard input of the next. Thus, we sometimes call `%>%` the R pipe operator.
+
+However, `%>%` is very powerful since it can be used with many R functions including graphics functions in R packages such as `ggplot2`.
+
+Let's group by `tailnum` example using `%>%`:
+```{r}
+group_by(flights_sdf, tailnum) %>%
+  summarise(
+    count = n(),
+    dist = mean(distance, na.rm = TRUE),
+    delay = mean(arr_delay, na.rm = TRUE)) %>%
+  filter(
+    count > 20, dist < 2000) %>%
+  collect() %>%
+  ggplot(
+    aes(dist, delay)) +
+    geom_point(aes(size = count), alpha = 1/2) +
+    geom_smooth() +
+    scale_size_area()
+```
+What makes this work is that the first argument is a data frame and the output is a data frame. Do you  see the potential of building very powerful workflows?
+
+```{r}
+spark_disconnect(sc)
+```
+
